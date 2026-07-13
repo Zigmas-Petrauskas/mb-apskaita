@@ -1,9 +1,17 @@
 import { Router } from "express";
+import { loginUser } from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.get("/test", (req, res) => {
-    res.json({ message: "Auth route veikia" });
-});
+/*
+    POST
+
+    /api/v1/auth/login
+
+
+    Vartotojo prisijungimas.
+*/
+
+router.post("/login", loginUser);
 
 export default router;

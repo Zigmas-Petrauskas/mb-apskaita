@@ -1,6 +1,7 @@
-import { Router } from "express";
-import authRoutes from "./auth.routes.js";
-import companyRoutes from "./company.routes.js";
+import { Router } from 'express';
+import authRoutes from './auth.routes.js';
+import companyRoutes from './company.routes.js';
+import systemRoutes from './system.routes.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ const router = Router();
 
 */
 
-router.use("/auth", authRoutes);
+router.use('/auth', authRoutes);
 
 /*
   Visi company keliai:
@@ -20,6 +21,20 @@ router.use("/auth", authRoutes);
 
 */
 
-router.use("/company", companyRoutes);
+router.use('/company', companyRoutes);
+
+/*
+  Sistemos informacija:
+
+  /api/v1/system/...
+
+  Pvz:
+
+  GET
+  /api/v1/system/status
+
+*/
+
+router.use('/system', systemRoutes);
 
 export default router;
