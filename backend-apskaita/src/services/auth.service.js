@@ -1,32 +1,55 @@
+import bcrypt from 'bcryptjs';
+import { pool } from '../database/connection.js';
+
 export const login = async (username, password) => {
   /*
-       Ateityje:
+    Prisijungimo eiga:
 
-       1. Ieškosime vartotojo:
+    1. Randame vartotoją pagal username
+    2. Paimame password_hash
+    3. Tikriname bcrypt
+    4. Grąžiname vartotojo duomenis
+  */
 
-       SELECT *
-       FROM users
-       WHERE email = ?
+  const users = await pool.query(
+    `
+      SELECT 
+        users.id,
+        users.username,
+        users.email,
+        users.password_hash,
+        users.two_factor_enabled,
+        roles.name AS role
 
-       2. Tikrinsime slaptažodį:
+      FROM users
 
-       bcrypt.compare()
+      INNER JOIN roles
+        ON users.role_id = roles.id
 
-       3. Generuosime:
+      WHERE users.username = ?
+    `,
+    [username],
+  );
 
-       JWT token
+  console.log('Login DB rezultatas:', users);
 
-       4. Tikrinsime:
-
-       ar reikalingas 2FA
-   */
-
-  /*
-        Kol kas testinis vartotojas.
-    */
-  if (username !== 'admin@test.lt' || password !== 12345678) {
+  if (users.length === 0) {
     throw new Error('Neteisingi prisijungimo duomenys');
   }
 
-  return { id: 1, username, role: 'OWNER', twoFactorRequired: true };
+  const user = users[0];
+
+  const passwordValid = await bcrypt.compare(password, user.password_hash);
+
+  if (!passwordValid) {
+    throw new Error('Neteisingi prisijungimo duomenys');
+  }
+
+  return {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    twoFactorRequired: user.two_factor_enabled,
+  };
 };
