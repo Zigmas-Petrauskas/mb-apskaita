@@ -1,7 +1,9 @@
 import { Router } from 'express';
+
 import authRoutes from './auth.routes.js';
 import companyRoutes from './company.routes.js';
 import systemRoutes from './system.routes.js';
+import usersRoutes from './users.routes.js';
 
 const router = Router();
 
@@ -36,5 +38,20 @@ router.use('/company', companyRoutes);
 */
 
 router.use('/system', systemRoutes);
+
+/*
+  Vartotojų keliai:
+
+  /api/v1/users/...
+
+  GET
+  /api/v1/users
+
+  POST
+  /api/v1/users
+
+*/
+
+router.use('/users', usersRoutes);
 
 export default router;
